@@ -21,5 +21,6 @@ import projects
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include("projects.urls")),
-    path('user/', include('users.urls'))
+    path('user/', include('users.urls')),
+    path('api/', include('api.urls')),
 ]

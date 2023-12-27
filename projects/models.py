@@ -23,6 +23,20 @@ class Project(models.Model):
     def __str__(self):
         return self.name
 
+    def delete(self):
+        self.image.delete()
+        self.demo_video.delete()
+        super().delete()
+
+    @property
+    def comments(self):
+        return self.comment_set.all()
+
+
+    @property
+    def votes(self):
+        return self.vote_set.all()
+
 
 class Category(models.Model):
     name = models.CharField(max_length=200, null=False, blank=False)
