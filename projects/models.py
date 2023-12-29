@@ -6,7 +6,7 @@ from users.models import Profile
 
 
 class Project(models.Model):
-    owner = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=200)
     image = models.ImageField()           # todo: define the path for file svaing
     demo_video = models.FileField()       # todo: path

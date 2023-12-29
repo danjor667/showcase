@@ -8,8 +8,8 @@ from rest_framework.decorators import api_view
 def endpoints(request):
     routes = [
         {'GET': '/api/projects/'},
+        {'POST': '/api/projects/'},
         {'GET': '/api/projects/id/'},
-        {'POST': 'api/projects/create/'},
         {'PUT': '/api/projects/id/update/'},
         {'DELETE': '/api/projects/id/delete/'}
     ]
