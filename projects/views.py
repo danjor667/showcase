@@ -1,14 +1,45 @@
 from django.shortcuts import render
+from rest_framework import status
+
 from users.models import Profile
+from .serializer import Projectserializer
+from .models import Project
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
 
 # Create your views here.
 
-def home(request):
-    return render(request, 'home.html')
+@api_view(['GET', 'POST'])
+def list_create(request):
+    if request.method == 'GET':
+        projects = Project.objects.all()
+        serializer = Projectserializer(projects, many=True)
+        return Response(serializer.data)
+    if request.method == 'POST':
+        serializer = Projectserializer(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-def home_detail(request, pk):
-    profile = Profile.objects.get(id=pk)
-    projects = profile.projects
-    context = {"projects": projects}
-    return render(request, 'home_detail.html', context)
+
+@api_view(['GET', 'PUT', 'DELETE'])
+def update_delete(request, pk):
+    try:
+        project = Project.objects.get(id=pk)
+    except Exception:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    if request.method == 'GET':
+        serializer = Projectserializer(project)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    if request.method == 'PUT':
+        serializer = Projectserializer(project, data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+        else:
+            return Response(status.HTTP_400_BAD_REQUEST)
+    elif request.method == 'DELETE':
+        project.delete()
+        return Response(status=status.HTTP_202_ACCEPTED)
+
 

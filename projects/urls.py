@@ -1,7 +1,11 @@
 from django.urls import path
 from . import views
 
+
+# /api/projects/
 urlpatterns = [
-    path("", views.home, name="home"),
-    path("home/<str:pk>/", views.home_detail, name="home-detail"),
+    path('', views.list_create),
+    path('<str:pk>/', views.update_delete, name="project"),
+    path('<str:pk>/update/', views.update_delete, name="update"),
+    path('<str:pk>/delete/', views.update_delete, name="delete"),
 ]
