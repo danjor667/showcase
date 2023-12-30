@@ -4,8 +4,9 @@ from . import views
 
 # /api/projects/
 urlpatterns = [
-    path('', views.generic_list_create),
-    path('<str:pk>/', views.generic_get_update_delete, name="project"),
-    path('<str:pk>/update/', views.generic_get_update_delete, name="update"),
-    path('<str:pk>/delete/', views.generic_get_update_delete, name="delete"),
+    path('', views.list),
+    path('create/', views.post),
+    path('<str:pk>/', views.list, name="project"),
+    path('<str:pk>/update/', views.update_delete, name="update"),
+    path('<str:pk>/delete/', views.update_delete, name="delete"),
 ]
