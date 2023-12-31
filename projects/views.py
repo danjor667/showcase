@@ -92,7 +92,7 @@ generic_create = ProjectCreate.as_view()
 
 class ProjectUpdateDelete(mixins.UpdateModelMixin, mixins.DestroyModelMixin, generics.GenericAPIView):
     authentication_classes = ([authentication.SessionAuthentication, authentication.TokenAuthentication])
-    permission_classes = ([IsOwnerOrReadOnly])
+    permission_classes = ([permissions.IsAdminUser, IsOwnerOrReadOnly])
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
 

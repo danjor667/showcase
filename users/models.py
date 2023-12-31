@@ -6,11 +6,11 @@ from django.contrib.auth.models import User
 
 class Profile(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    photo = models.ImageField()
+    photo = models.ImageField(null=True,blank=True)
     email = models.EmailField()
     bio = models.TextField(max_length=1000, null=True, blank=True)
-    school = models.CharField(max_length=200)
-    major = models.CharField(max_length=200)
+    school = models.CharField(max_length=200, null=True, blank=True)
+    major = models.CharField(max_length=200, null=True, blank=True)
     github = models.URLField(null=True, blank=True)
     LinkedIn = models.URLField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -25,5 +25,5 @@ class Profile(models.Model):
 
     @property
     def projects(self):
-        return self.project_set.all()
+        return self.user.project_set()
 
