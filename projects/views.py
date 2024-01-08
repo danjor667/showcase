@@ -60,7 +60,7 @@ def update_delete(request, *args, **kwargs):
 
 class ProjectList(mixins.ListModelMixin, mixins.RetrieveModelMixin,
                   generics.GenericAPIView):
-    authentication_classes([authentication.SessionAuthentication,authentication.TokenAuthentication])
+    authentication_classes([authentication.SessionAuthentication, authentication.TokenAuthentication])
     permission_classes([permissions.IsAuthenticatedOrReadOnly])
     serializer_class = ProjectSerializer
     queryset = Project.objects.all()

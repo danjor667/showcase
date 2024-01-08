@@ -7,5 +7,5 @@ urlpatterns = [
     path('auth/', views.obtain_auth_token),
     path('projects/', include('projects.urls')),
     path('users/', include('users.urls')),
-    path('profiles/', include('users.urls')),
+    path('pfrofiles/', include('users.urls')),
 ]

@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 
 class Profile(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    photo = models.ImageField(null=True,blank=True)
+    photo = models.ImageField(null=True, blank=True)
     email = models.EmailField()
     bio = models.TextField(max_length=1000, null=True, blank=True)
     school = models.CharField(max_length=200, null=True, blank=True)

@@ -1,8 +1,9 @@
-from .models import User
+from .models import User, Profile
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.generics import get_object_or_404
 from rest_framework import permissions, authentication
 from .permissions import IsMe
+from rest_framework import generics, mixins
 from rest_framework import status
 from .serializers import UserSerializer
 from rest_framework.response import Response
@@ -45,3 +46,38 @@ def update_delete(request, *args, **kwargs):
     if request.method == 'DELETE':
         user.delete()
         return Response(status=status.HTTP_200_OK)
+
+########### generic api views ############
+
+class UserList(mixins.ListModelMixin, mixins.RetrieveModelMixin,generics.GenericAPIView):
+    pass
+# todo implemente this view
+
+class UserCreate(generics.ListCreateAPIView):
+    serializer_class = UserSerializer
+    queryset = User.objects.all()
+
+generic_create = UserCreate.as_view()
+
+
+class UserUpdateDelete(mixins.UpdateModelMixin, mixins.DestroyModelMixin, generics.GenericAPIView):
+    authentication_classes = ([authentication.SessionAuthentication, authentication.TokenAuthentication])
+    permission_classes = ([IsMe])
+    serializer_class = UserSerializer
+    queryset = User.objects.all()
+
+    def put(self, request, *args, **kwargs):
+        print(request.user)
+        return self.update(request, *args, **kwargs)
+
+
+    def delete(self, request, *args, **kwargs):
+        print(request.user)
+        return self.destroy(request, *args,**kwargs)
+
+generic_update_delete = UserUpdateDelete.as_view()
+
+
+################### profile related views ################
+# todo implement the views related to Profile CRUD operations
+
