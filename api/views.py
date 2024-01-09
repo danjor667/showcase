@@ -8,7 +8,7 @@ from rest_framework.authtoken.views import obtain_auth_token
 def endpoints(request):
     routes = [
         {'GET': '/api/projects/'},
-        {'POST': '/api/projects/'},
+        {'POST': '/api/projects/create/'},
         {'GET': '/api/projects/id/'},
         {'PUT': '/api/projects/id/update/'},
         {'DELETE': '/api/projects/id/delete/'}
