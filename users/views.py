@@ -2,6 +2,7 @@ from .models import User, Profile
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.generics import get_object_or_404
 from rest_framework import permissions, authentication
+from rest_framework.authtoken.models import Token
 from .permissions import IsMe
 from rest_framework import generics, mixins
 from rest_framework import status
@@ -53,9 +54,19 @@ class UserList(mixins.ListModelMixin, mixins.RetrieveModelMixin,generics.Generic
     pass
 # todo implemente this view
 
-class UserCreate(generics.ListCreateAPIView):
+class UserCreate(mixins.CreateModelMixin, generics.GenericAPIView):
     serializer_class = UserSerializer
     queryset = User.objects.all()
+
+    def post(self, request, *args, **kwargs):
+        serializer = UserSerializer(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            user = User.objects.get(username=request.data.get("username"))
+            token = Token.objects.create(user=user)
+            return Response({"token": token.key, "user": serializer.validated_data},
+                            status=status.HTTP_201_CREATED)
+        return Response(status=status.HTTP_400_BAD_REQUEST)
 
 generic_create = UserCreate.as_view()
 

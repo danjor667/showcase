@@ -8,8 +8,8 @@ token_res = requests.post(gettoken, json={"username":username, "password":passwo
 if token_res.status_code ==200:
     print(token_res.status_code)
     pk = int(input("enter the project id: "))
-    token = token_res.json().get("token")
     headers = {"Authorization": f"Token {token}"}
+    token = token_res.json().get("token")
     url = f"http://localhost:8000/api/projects/{pk}/delete/"
     res = requests.delete(url, headers=headers)
     print(res.status_code)
