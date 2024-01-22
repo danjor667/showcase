@@ -5,9 +5,8 @@ from django.contrib.auth.models import User
 
 
 class Profile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    photo = models.ImageField(null=True, blank=True)
-    email = models.EmailField()
+    owner = models.OneToOneField(User, on_delete=models.CASCADE)
+    photo = models.ImageField(null=True, blank=True, upload_to="profile/user/")
     bio = models.TextField(max_length=1000, null=True, blank=True)
     school = models.CharField(max_length=200, null=True, blank=True)
     major = models.CharField(max_length=200, null=True, blank=True)
@@ -15,7 +14,7 @@ class Profile(models.Model):
     LinkedIn = models.URLField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    resume = models.FileField(null=True, blank=True)
+    resume = models.FileField(null=True, blank=True, upload_to="profile/resume/")
 
 
 

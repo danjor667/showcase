@@ -4,9 +4,10 @@ from rest_framework.generics import get_object_or_404
 from rest_framework import permissions, authentication
 from rest_framework.authtoken.models import Token
 from .permissions import IsMe
+from projects.permissions import IsOwnerOrReadOnly
 from rest_framework import generics, mixins
 from rest_framework import status
-from .serializers import UserSerializer
+from .serializers import UserSerializer, ProfileSerializer
 from rest_framework.response import Response
 
 
@@ -50,9 +51,20 @@ def update_delete(request, *args, **kwargs):
 
 ########### generic api views ############
 
-class UserList(mixins.ListModelMixin, mixins.RetrieveModelMixin,generics.GenericAPIView):
-    pass
-# todo implemente this view
+class UserList(mixins.ListModelMixin,
+               mixins.RetrieveModelMixin,
+               generics.GenericAPIView):
+    serializer_class = UserSerializer
+    queryset = User.objects.all()
+
+    def get(self, request, *args, **kwargs):
+        pk = kwargs.get('pk')
+        if pk:
+            return self.retrieve(request, *args, **kwargs)
+        else:
+            return self.list(request, *args, **kwargs)
+
+generic_list = UserList().as_view()
 
 class UserCreate(mixins.CreateModelMixin, generics.GenericAPIView):
     serializer_class = UserSerializer
@@ -78,17 +90,23 @@ class UserUpdateDelete(mixins.UpdateModelMixin, mixins.DestroyModelMixin, generi
     queryset = User.objects.all()
 
     def put(self, request, *args, **kwargs):
-        print(request.user)
         return self.update(request, *args, **kwargs)
 
 
     def delete(self, request, *args, **kwargs):
-        print(request.user)
-        return self.destroy(request, *args,**kwargs)
+        return self.destroy(request, *args, **kwargs)
 
 generic_update_delete = UserUpdateDelete.as_view()
 
 
 ################### profile related views ################
-# todo implement the views related to Profile CRUD operations
 
+
+class ProfileUpdateDelete(mixins.UpdateModelMixin,
+                          generics.GenericAPIView):
+    serializer_class = ProfileSerializer
+    queryset = Profile.objects.all()
+    authentication_classes = ([authentication.SessionAuthentication, authentication.TokenAuthentication])
+    permission_classes = ([IsOwnerOrReadOnly])
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)

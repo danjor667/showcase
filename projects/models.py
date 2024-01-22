@@ -7,11 +7,12 @@ from django.contrib.auth.models import User
 class Project(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=200)
-    image = models.ImageField()           # todo: define the path for file svaing
-    demo_video = models.FileField()       # todo: path
+    image = models.ImageField(upload_to="project/photo/")
+    demo_video = models.FileField(upload_to="project/demo_video/")
     source_code_link = models.URLField()
     link = models.URLField()
     category = models.ManyToManyField('Category')
+    new_category = models.CharField(max_length=200, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

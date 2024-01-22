@@ -1,9 +1,10 @@
 from rest_framework import status
 from rest_framework.generics import get_object_or_404
 from rest_framework import generics, mixins, authentication, permissions
-from .serializer import ProjectSerializer
-from .models import Project
+from .serializer import ProjectSerializer, CommentSerializer
+from .models import Project, Category, Comment
 from .permissions import IsOwnerOrReadOnly
+from .models import Category
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 
@@ -84,13 +85,20 @@ class ProjectCreate(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         user = self.request.user
+        new_category = self.request.data.get("new_category")
+        if new_category:
+            obj = Category.objects.create(name=new_category)
+            obj.save()
+            serializer.validated_data.get("category").append(obj)
         serializer.save(owner=user)
 
 
 generic_create = ProjectCreate.as_view()
 
 
-class ProjectUpdateDelete(mixins.UpdateModelMixin, mixins.DestroyModelMixin, generics.GenericAPIView):
+class ProjectUpdateDelete(mixins.UpdateModelMixin,
+                          mixins.DestroyModelMixin,
+                          generics.GenericAPIView):
     authentication_classes = ([authentication.SessionAuthentication, authentication.TokenAuthentication])
     permission_classes = ([permissions.IsAdminUser, IsOwnerOrReadOnly])
     queryset = Project.objects.all()
@@ -104,3 +112,44 @@ class ProjectUpdateDelete(mixins.UpdateModelMixin, mixins.DestroyModelMixin, gen
 
 
 generic_update_delete = ProjectUpdateDelete.as_view()
+
+
+################# Comment #############
+
+class CommentCreate(mixins.CreateModelMixin, generics.GenericAPIView):
+    serializer_class = CommentSerializer
+    queryset = Comment.objects.all()
+    authentication_classes = ([authentication.SessionAuthentication, authentication.TokenAuthentication])
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+
+    def perform_create(self, serializer):
+        user = self.request.user
+        serializer.save(owner=user)
+
+comment_create = CommentCreate.as_view()
+
+
+class CommentList(mixins.ListModelMixin, generics.GenericAPIView):
+    serializer_class = CommentSerializer
+    queryset = Comment.objects.all()
+
+    def get(self, request, *args, **kwargs):
+         return self.list(request, *args,  **kwargs)
+
+comment_list = CommentList.as_view()
+
+
+class CommentUpdateDelete(mixins.UpdateModelMixin, mixins.DestroyModelMixin, generics.GenericAPIView):
+    serializer_class = CommentSerializer
+    queryset = Comment.objects.all()
+    authentication_classes = ([authentication.SessionAuthentication, authentication.TokenAuthentication])
+    permission_classes = ([IsOwnerOrReadOnly])
+
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        self.destroy(request, *args, **kwargs)
+
+comment_update_delete = CommentUpdateDelete.as_view()
