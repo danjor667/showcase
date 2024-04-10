@@ -1,12 +1,11 @@
 import requests
 from getpass import getpass
+password = "Jordan1995"
 
-password =getpass()
-get_token = requests.post("http://localhost:8000/api/auth/", json={"username": "lopez", "password": password})
-token = (get_token.json().get("token"))
-
-headers = {"Authorization": f"Token {token}"}
-url = "http://localhost:8000/api/users/"
-res = requests.get(url, headers=headers)
+#headers = {"Authorization": f"Token {token}"}
+url = "http://localhost:8000/api/auth/"
+res = requests.post(url, json={"username": "jordan", "password": password})
 print(res.status_code)
-print(res.json())
+token = (res.json())
+
+#### trying creating a user

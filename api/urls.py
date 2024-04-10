@@ -4,6 +4,7 @@ from users.views import generic_create
 
 
 urlpatterns = [
+    # test
     path('', views.endpoints, name='endpoints'),
     path('auth/', views.obtain_auth_token),
     path('auth/register/', generic_create),
